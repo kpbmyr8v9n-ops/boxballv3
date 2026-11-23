@@ -1,0 +1,19 @@
+name: iOS compile check (optional)
+on:
+  workflow_dispatch:
+jobs:
+  ios-check:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npx cap add ios
+      - run: bash scripts/patch-ios.sh
+      - run: npx capacitor-assets generate --ios
+      - run: npx cap sync ios
+      - name: Unsigned simulator build (proves the project compiles)
+        run: |
+          if [ -d ios/App/App.xcworkspace ]; then T="-workspace ios/App/App.xcworkspace"; else T="-project ios/App/App.xcodeproj"; fi
+          xcodebuild $T -scheme App -sdk iphonesimulator -configuration Debug build CODE_SIGNING_ALLOWED=NO
