@@ -1,0 +1,10 @@
+node_modules/
+android/app/build/
+android/build/
+android/.gradle/
+*.jks
+*.keystore
+keystore.b64
+ios/App/Pods/
+ios/App/build/
+.DS_Store
